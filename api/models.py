@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import UniqueConstraint
 
 
 class Step(models.Model):
@@ -22,6 +23,11 @@ class Choice(models.Model):
 
 
 class NextStep(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['step', 'choice'], name='step_choice')
+        ]
+
     step = models.OneToOneField(Step, primary_key=True, on_delete=models.CASCADE)
     choice = models.OneToOneField(Choice, on_delete=models.CASCADE)
 
