@@ -1,3 +1,18 @@
-from django.shortcuts import render
+from .models import Step, FirstStep, Choice
+from .serializers import FirstStepSerializer, StepSerializer, ChoiceSerializer
+from rest_framework import viewsets
 
-# Create your views here.
+
+class StepViewSet(viewsets.ModelViewSet):
+    queryset = Step.objects.all()
+    serializer_class = StepSerializer
+
+
+class FirstStepViewSet(viewsets.ModelViewSet):
+    queryset = FirstStep.objects.all()
+    serializer_class = FirstStepSerializer
+
+
+class ChoiceViewSet(viewsets.ModelViewSet):
+    queryset = Choice.objects.all()
+    serializer_class = ChoiceSerializer
