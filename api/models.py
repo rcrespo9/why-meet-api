@@ -15,21 +15,12 @@ class Choice(models.Model):
         YES = 1, 'Yes'
 
     answer = models.IntegerField(choices=Answer.choices)
-    additional_answer_text = models.CharField(max_length=100, blank=True, null=True)
+    additional_answer_text = models.CharField(max_length=100, null=True)
     step = models.ForeignKey(Step, on_delete=models.CASCADE)
+    next_step = models.OneToOneField(Step, related_name="next_step", null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.answer
-
-
-class NextStep(models.Model):
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['step', 'choice'], name='step_choice')
-        ]
-
-    step = models.OneToOneField(Step, primary_key=True, on_delete=models.CASCADE)
-    choice = models.OneToOneField(Choice, on_delete=models.CASCADE)
 
 
 class InterstitialStep(models.Model):
