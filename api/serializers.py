@@ -5,7 +5,7 @@ from .models import Step, FirstStep, FinalStep, Choice
 class ChoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Choice
-        fields = ('answer', 'additional_answer_text', 'step', 'next_step')
+        fields = ('id', 'answer', 'additional_answer_text', 'step', 'next_step')
 
 
 class FinalStepSerializer(serializers.ModelSerializer):
@@ -24,8 +24,14 @@ class StepSerializer(serializers.ModelSerializer):
 
 
 class FirstStepSerializer(serializers.ModelSerializer):
-    # step = StepSerializer()
+    step = StepSerializer(read_only=True)
+    step_id = serializers.PrimaryKeyRelatedField(
+        queryset=Step.objects.all(),
+        source="step",
+        required=True,
+        write_only=True
+    )
 
     class Meta:
         model = FirstStep
-        fields = ('step', )
+        fields = ('step', 'step_id')
