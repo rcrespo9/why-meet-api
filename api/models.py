@@ -12,11 +12,11 @@ class Step(models.Model):
 
 
 class Choice(models.Model):
-    class Answer(models.TextChoices):
-        NO = 'N', _('No')
-        YES = 'Y', _('Yes')
+    class Answer(models.IntegerChoices):
+        NO = 0, _('No')
+        YES = 1, _('Yes')
 
-    answer = models.CharField(max_length=1, choices=Answer.choices)
+    answer = models.IntegerField(choices=Answer.choices)
     additional_answer_text = models.CharField(max_length=100, null=True)
     step = models.ForeignKey(Step, related_name="choices", on_delete=models.CASCADE)
     next_step = models.OneToOneField(Step, null=True, on_delete=models.SET_NULL)
