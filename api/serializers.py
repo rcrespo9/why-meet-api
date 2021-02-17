@@ -12,9 +12,11 @@ class ChoiceSerializer(serializers.ModelSerializer):
 
 
 class FinalStepSerializer(serializers.ModelSerializer):
+    step_text = serializers.CharField(source="step.text", read_only=True)
+
     class Meta:
         model = FinalStep
-        fields = ('step', 'should_go_to_meeting')
+        fields = ('step', 'step_text', 'should_go_to_meeting')
 
 
 class StepSerializer(serializers.ModelSerializer):
