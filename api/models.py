@@ -53,6 +53,9 @@ class FinalStep(models.Model):
     def save(self, *args, **kwargs):
         if self.step.choices.exists():
             raise ValidationError("Final steps can't have any choices.")
+
+        if self.step.is_interstitial:
+            raise ValidationError("Interstitial steps can't be final steps.")
         return super(FinalStep, self).save(*args, **kwargs)
 
     def __str__(self):
