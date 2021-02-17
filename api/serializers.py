@@ -3,12 +3,11 @@ from .models import Step, FirstStep, FinalStep, Choice
 
 
 class ChoiceSerializer(serializers.ModelSerializer):
-    answer_id = serializers.ChoiceField(choices=Choice.objects.all(), write_only=True)
-    answer = serializers.CharField(source='get_answer_display', read_only=True)
+    answer = serializers.CharField(source='get_answer_display')
 
     class Meta:
         model = Choice
-        fields = ('id', 'answer', 'answer_id', 'additional_answer_text', 'step', 'next_step')
+        fields = ('id', 'answer', 'additional_answer_text', 'step', 'next_step')
         depth = 1
 
 

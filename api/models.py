@@ -35,11 +35,14 @@ class Choice(models.Model):
 
 
 class FirstStep(models.Model):
-    step = models.OneToOneField(Step, primary_key=True, on_delete=models.CASCADE)
+    step = models.OneToOneField(Step, primary_key=True, related_name="first_step", on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
-        if FirstStep.objects.exists():
+        if not self.pk and FirstStep.objects.exists():
             raise ValidationError('There can only be one FirstStep instance')
+
+        if hasattr(self.step, "final_step"):
+            raise ValidationError("First step can't be final step.")
         return super(FirstStep, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -56,6 +59,9 @@ class FinalStep(models.Model):
 
         if self.step.is_interstitial:
             raise ValidationError("Interstitial steps can't be final steps.")
+
+        if hasattr(self.step, "first_step"):
+            raise ValidationError("Final step can't be first step.")
         return super(FinalStep, self).save(*args, **kwargs)
 
     def __str__(self):
