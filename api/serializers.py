@@ -9,19 +9,18 @@ class ChoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Choice
         fields = ('id', 'answer', 'answer_id', 'additional_answer_text', 'step', 'next_step')
+        depth = 1
 
 
 class FinalStepSerializer(serializers.ModelSerializer):
-    step_text = serializers.CharField(source="step.text", read_only=True)
-
     class Meta:
         model = FinalStep
-        fields = ('step', 'step_text', 'should_go_to_meeting')
+        fields = ('step', 'should_go_to_meeting')
 
 
 class StepSerializer(serializers.ModelSerializer):
-    choices = ChoiceSerializer(many=True, read_only=True)
-    final_step = FinalStepSerializer(read_only=True)
+    choices = ChoiceSerializer(many=True)
+    final_step = FinalStepSerializer()
 
     class Meta:
         model = Step
@@ -29,14 +28,8 @@ class StepSerializer(serializers.ModelSerializer):
 
 
 class FirstStepSerializer(serializers.ModelSerializer):
-    step = StepSerializer(read_only=True)
-    step_id = serializers.PrimaryKeyRelatedField(
-        queryset=Step.objects.all(),
-        source="step",
-        required=True,
-        write_only=True
-    )
+    step = StepSerializer()
 
     class Meta:
         model = FirstStep
-        fields = ('step', 'step_id')
+        fields = ('step', )

@@ -31,7 +31,7 @@ class Choice(models.Model):
         return super(Choice, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.get_answer_display()
+        return '%s - %s' % (self.step.text, self.get_answer_display())
 
 
 class FirstStep(models.Model):

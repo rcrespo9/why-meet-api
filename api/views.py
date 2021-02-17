@@ -3,21 +3,22 @@ from .serializers import FirstStepSerializer, StepSerializer, FinalStepSerialize
 from rest_framework import viewsets
 
 
-class StepViewSet(viewsets.ModelViewSet):
+class StepViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Step.objects.all()
     serializer_class = StepSerializer
 
 
-class FirstStepViewSet(viewsets.ModelViewSet):
+class FirstStepViewSet(viewsets.ReadOnlyModelViewSet):
+    # TODO: only get first step since there should only be one
     queryset = FirstStep.objects.all()
     serializer_class = FirstStepSerializer
 
 
-class FinalStepViewSet(viewsets.ModelViewSet):
+class FinalStepViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = FinalStep.objects.all()
     serializer_class = FinalStepSerializer
 
 
-class ChoiceViewSet(viewsets.ModelViewSet):
+class ChoiceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Choice.objects.all()
     serializer_class = ChoiceSerializer
