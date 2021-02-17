@@ -5,6 +5,7 @@ from django.db import models
 
 class Step(models.Model):
     text = models.TextField()
+    # TODO: create interstitial step model
     is_interstitial = models.BooleanField(default=False)
 
     def __str__(self):
@@ -38,6 +39,7 @@ class FirstStep(models.Model):
     step = models.OneToOneField(Step, primary_key=True, related_name="first_step", on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
+        # TODO: can only have one model instance
         if not self.pk and FirstStep.objects.exists():
             raise ValidationError('There can only be one FirstStep instance')
 
