@@ -50,5 +50,10 @@ class FinalStep(models.Model):
     step = models.OneToOneField(Step, primary_key=True, related_name="final_step", on_delete=models.CASCADE)
     should_go_to_meeting = models.BooleanField(default=False)
 
+    def save(self, *args, **kwargs):
+        if self.step.choices.exists():
+            raise ValidationError("Final steps can't have any choices.")
+        return super(FinalStep, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.step.text

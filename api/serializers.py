@@ -24,7 +24,7 @@ class StepSerializer(serializers.ModelSerializer):
 
 
 class FirstStepSerializer(serializers.ModelSerializer):
-    step = StepSerializer()
+    # step = StepSerializer()
 
     class Meta:
         model = FirstStep
