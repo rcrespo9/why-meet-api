@@ -22,6 +22,7 @@ router = routers.DefaultRouter()
 router.register(r'steps', views.StepViewSet)
 router.register(r'first_step', views.FirstStepViewSet)
 router.register(r'choice', views.ChoiceViewSet)
+router.register(r'final_step', views.FinalStepViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -1,3 +1,5 @@
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 from django.db import models
 
 
@@ -10,29 +12,43 @@ class Step(models.Model):
 
 
 class Choice(models.Model):
-    class Answer(models.IntegerChoices):
-        NO = 0, 'No'
-        YES = 1, 'Yes'
+    class Answer(models.TextChoices):
+        NO = 'N', _('No')
+        YES = 'Y', _('Yes')
 
-    answer = models.IntegerField(choices=Answer.choices)
+    answer = models.CharField(max_length=1, choices=Answer.choices)
     additional_answer_text = models.CharField(max_length=100, null=True)
     step = models.ForeignKey(Step, related_name="choices", on_delete=models.CASCADE)
-    next_step = models.OneToOneField(Step, related_name="next_step", null=True, on_delete=models.SET_NULL)
+    next_step = models.OneToOneField(Step, null=True, on_delete=models.SET_NULL)
+
+    def save(self, *args, **kwargs):
+        if self.next_step is not None:
+            if self.step.pk == self.next_step.pk:
+                raise ValidationError("Parent step and next step can't be the same.")
+
+        if hasattr(self.step, "final_step"):
+            raise ValidationError("Final steps can't have any choices.")
+        return super(Choice, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.answer
+        return self.get_answer_display()
 
 
 class FirstStep(models.Model):
     step = models.OneToOneField(Step, primary_key=True, on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        if not self.pk and FirstStep.objects.exists():
+            raise ValidationError('There can only be one FirstStep instance')
+        return super(FirstStep, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.step.text
 
 
 class FinalStep(models.Model):
-    step = models.OneToOneField(Step, primary_key=True, on_delete=models.CASCADE)
-    is_go = models.BooleanField(default=False)
+    step = models.OneToOneField(Step, primary_key=True, related_name="final_step", on_delete=models.CASCADE)
+    should_go_to_meeting = models.BooleanField(default=False)
 
     def __str__(self):
         return self.step.text
