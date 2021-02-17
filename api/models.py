@@ -38,7 +38,7 @@ class FirstStep(models.Model):
     step = models.OneToOneField(Step, primary_key=True, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
-        if not self.pk and FirstStep.objects.exists():
+        if FirstStep.objects.exists():
             raise ValidationError('There can only be one FirstStep instance')
         return super(FirstStep, self).save(*args, **kwargs)
 
