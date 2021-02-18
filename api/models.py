@@ -11,7 +11,6 @@ class Step(models.Model):
         ]
 
     text = models.TextField()
-    # TODO: create interstitial step model
     is_interstitial = models.BooleanField(default=False)
     is_first_step = models.BooleanField(default=False)
 
@@ -20,19 +19,25 @@ class Step(models.Model):
 
 
 class Choice(models.Model):
+    # TODO: unique constraint on step and next step
     class Answer(models.IntegerChoices):
         NO = 0, _('No')
-        YES = 1, _('Yes')
+        YES = 1, _('Yes'),
+        NA = 2, _('Not Applicable')
 
     answer = models.IntegerField(choices=Answer.choices)
-    additional_answer_text = models.CharField(max_length=100, null=True)
+    additional_answer_text = models.CharField(max_length=100, null=True, blank=True)
     step = models.ForeignKey(Step, related_name="choices", on_delete=models.CASCADE)
+    # TODO: steps can share a next step thru choices
     next_step = models.OneToOneField(Step, null=True, on_delete=models.SET_NULL)
 
     def save(self, *args, **kwargs):
         if self.next_step is not None:
             if self.step.pk == self.next_step.pk:
                 raise ValidationError("Parent step and next step can't be the same.")
+
+        if self.step.is_interstitial and (self.answer != 2 or self.additional_answer_text is not None):
+            raise ValidationError("The only answer allowed for interstitial steps is N/A.")
 
         if hasattr(self.step, "final_step"):
             raise ValidationError("Final steps can't have any choices.")
