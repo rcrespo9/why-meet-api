@@ -28,8 +28,7 @@ class Choice(models.Model):
     answer = models.IntegerField(choices=Answer.choices)
     additional_answer_text = models.CharField(max_length=100, null=True, blank=True)
     step = models.ForeignKey(Step, related_name="choices", on_delete=models.CASCADE)
-    # TODO: steps can share a next step thru choices
-    next_step = models.OneToOneField(Step, null=True, on_delete=models.SET_NULL)
+    next_step = models.ForeignKey(Step, null=True, blank=True, on_delete=models.SET_NULL)
 
     def save(self, *args, **kwargs):
         if self.next_step is not None:
