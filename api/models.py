@@ -1,12 +1,19 @@
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 
 
 class Step(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['is_first_step'], condition=Q(is_first_step=True), name="one_first_step")
+        ]
+
     text = models.TextField()
     # TODO: create interstitial step model
     is_interstitial = models.BooleanField(default=False)
+    is_first_step = models.BooleanField(default=False)
 
     def __str__(self):
         return self.text
@@ -35,22 +42,6 @@ class Choice(models.Model):
         return '%s - %s' % (self.step.text, self.get_answer_display())
 
 
-class FirstStep(models.Model):
-    step = models.OneToOneField(Step, primary_key=True, related_name="first_step", on_delete=models.CASCADE)
-
-    def save(self, *args, **kwargs):
-        # TODO: can only have one model instance
-        if not self.pk and FirstStep.objects.exists():
-            raise ValidationError('There can only be one FirstStep instance')
-
-        if hasattr(self.step, "final_step"):
-            raise ValidationError("First step can't be final step.")
-        return super(FirstStep, self).save(*args, **kwargs)
-
-    def __str__(self):
-        return self.step.text
-
-
 class FinalStep(models.Model):
     step = models.OneToOneField(Step, primary_key=True, related_name="final_step", on_delete=models.CASCADE)
     should_go_to_meeting = models.BooleanField(default=False)
@@ -62,7 +53,7 @@ class FinalStep(models.Model):
         if self.step.is_interstitial:
             raise ValidationError("Interstitial steps can't be final steps.")
 
-        if hasattr(self.step, "first_step"):
+        if self.step.is_first_step:
             raise ValidationError("Final step can't be first step.")
         return super(FinalStep, self).save(*args, **kwargs)
 

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Step, FirstStep, FinalStep, Choice
+from .models import Step, FinalStep, Choice
 
 
 class ChoiceSerializer(serializers.ModelSerializer):
@@ -24,11 +24,3 @@ class StepSerializer(serializers.ModelSerializer):
     class Meta:
         model = Step
         fields = ('id', 'text', 'choices', 'final_step')
-
-
-class FirstStepSerializer(serializers.ModelSerializer):
-    step = StepSerializer()
-
-    class Meta:
-        model = FirstStep
-        fields = ('step', )
