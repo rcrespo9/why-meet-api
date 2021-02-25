@@ -44,6 +44,8 @@ class Choice(models.Model):
         if self.step.is_interstitial and (self.answer != 2 or self.additional_answer_text is not None):
             raise ValidationError("The only answer allowed for interstitial steps is N/A.")
 
+        # TODO: there can't exist inverse version of steps
+
         if hasattr(self.step, "final_step"):
             raise ValidationError("Final steps can't have any choices.")
 
