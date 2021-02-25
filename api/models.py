@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 
@@ -19,7 +20,12 @@ class Step(models.Model):
 
 
 class Choice(models.Model):
-    # TODO: unique constraint on step and next step
+    # TODO: inverse of step and next step can't exist
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['step', 'next_step'], name='unique_step_next_step')
+        ]
+
     class Answer(models.IntegerChoices):
         NO = 0, _('No')
         YES = 1, _('Yes'),
@@ -40,6 +46,7 @@ class Choice(models.Model):
 
         if hasattr(self.step, "final_step"):
             raise ValidationError("Final steps can't have any choices.")
+
         return super(Choice, self).save(*args, **kwargs)
 
     def __str__(self):
