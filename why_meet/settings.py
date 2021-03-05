@@ -53,6 +53,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# TODO: Add CORS (see this package: https://github.com/adamchainz/django-cors-headers)
+
 ROOT_URLCONF = 'why_meet.urls'
 
 TEMPLATES = [
