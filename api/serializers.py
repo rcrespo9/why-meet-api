@@ -22,4 +22,4 @@ class StepSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Step
-        fields = ('text', 'choices', 'final_step', 'is_interstitial')
+        fields = ('text', 'choices', 'final_step', 'is_first_step', 'is_interstitial')
