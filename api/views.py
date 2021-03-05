@@ -1,22 +1,17 @@
-from rest_framework.generics import get_object_or_404
-
+from rest_framework.views import APIView
 from .models import Step, FinalStep, Choice
 from .serializers import StepSerializer, FinalStepSerializer, ChoiceSerializer
-from rest_framework import viewsets, generics
+from rest_framework import response, viewsets
 
 
 class StepViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Step.objects.all()
     serializer_class = StepSerializer
 
-    def get_queryset(self):
-        queryset = Step.objects.all()
-        is_first_step = self.request.query_params.get('is_first_step', None)
-        if is_first_step is not None:
-            # TODO: return one only!
-            queryset = queryset.filter(is_first_step=is_first_step)
-        return queryset
 
+class FirstStep(viewsets.ReadOnlyModelViewSet):
+  queryset = Step.objects.filter(is_first_step=True).distinct()
+  serializer_class = StepSerializer
 
 class FinalStepViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = FinalStep.objects.all()
