@@ -7,14 +7,13 @@ class ChoiceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Choice
-        fields = ('id', 'answer', 'additional_answer_text', 'step', 'next_step')
-        depth = 1
+        fields = ('id', 'answer', 'additional_answer_text', 'next_step')
 
 
 class FinalStepSerializer(serializers.ModelSerializer):
     class Meta:
         model = FinalStep
-        fields = ('step', 'should_go_to_meeting')
+        fields = ('should_go_to_meeting',)
 
 
 class StepSerializer(serializers.ModelSerializer):
@@ -23,4 +22,4 @@ class StepSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Step
-        fields = ('id', 'text', 'choices', 'final_step')
+        fields = ('text', 'choices', 'final_step', 'is_interstitial')
