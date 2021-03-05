@@ -13,6 +13,7 @@ class StepViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = Step.objects.all()
         is_first_step = self.request.query_params.get('is_first_step', None)
         if is_first_step is not None:
+            # TODO: return one only!
             queryset = queryset.filter(is_first_step=is_first_step)
         return queryset
 
