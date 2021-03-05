@@ -11,7 +11,7 @@ class Step(models.Model):
             models.UniqueConstraint(fields=['is_first_step'], condition=Q(is_first_step=True), name="one_first_step")
         ]
 
-    text = models.TextField()
+    text = models.TextField(unique=True)
     is_interstitial = models.BooleanField(default=False)
     is_first_step = models.BooleanField(default=False)
 
