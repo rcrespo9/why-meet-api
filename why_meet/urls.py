@@ -20,8 +20,6 @@ from api import views
 
 router = routers.DefaultRouter()
 router.register(r'steps', views.StepViewSet)
-router.register(r'choices', views.ChoiceViewSet)
-# router.register(r'final-steps', views.FinalStepViewSet)
 router.register(r'first-step', views.FirstStep)
 
 urlpatterns = [
