@@ -27,8 +27,7 @@ class Choice(models.Model):
 
     class Answer(models.IntegerChoices):
         NO = 0, _('No')
-        YES = 1, _('Yes'),
-        NA = 2, _('Not Applicable')
+        YES = 1, _('Yes')
 
     answer = models.IntegerField(choices=Answer.choices)
     additional_answer_text = models.CharField(max_length=100, null=True, blank=True)
@@ -40,13 +39,11 @@ class Choice(models.Model):
             if self.step.pk == self.next_step.pk:
                 raise ValidationError("Parent step and next step can't be the same.")
 
-        if self.step.is_interstitial and (self.answer != 2 or self.additional_answer_text is not None):
-            raise ValidationError("The only answer allowed for interstitial steps is N/A.")
-
-        # TODO: there can't exist inverse version of steps
-
         if hasattr(self.step, "final_step"):
             raise ValidationError("Final steps can't have any choices.")
+
+        if hasattr(self.step, "interstitial_step"):
+            raise ValidationError("Interstitial steps can't have any choices.")
 
         return super(Choice, self).save(*args, **kwargs)
 
@@ -72,7 +69,7 @@ class FinalStep(models.Model):
         if self.step.choices.exists():
             raise ValidationError("Final steps can't have any choices.")
 
-        if self.step.is_interstitial:
+        if hasattr(self.step, "interstitial_step"):
             raise ValidationError("Interstitial steps can't be final steps.")
 
         if self.step.is_first_step:
