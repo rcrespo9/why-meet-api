@@ -57,6 +57,17 @@ class InterstitialStep(models.Model):
   next_step = models.OneToOneField(
       Step, null=True, blank=True, on_delete=models.SET_NULL)
 
+  def save(self, *args, **kwargs):
+    if self.step.choices.exists():
+        raise ValidationError("Interstitial steps can't have any choices.")
+
+    if hasattr(self.step, "final_step"):
+        raise ValidationError("Final steps can't be interstitial steps.")
+
+    if self.step.is_first_step:
+        raise ValidationError("Interstitial step can't be first step.")
+    return super(FinalStep, self).save(*args, **kwargs)
+
   def __str__(self):
     return self.step.text
 
