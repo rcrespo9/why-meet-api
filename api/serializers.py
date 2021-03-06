@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Step, FinalStep, Choice
+from .models import Step, FinalStep, Choice, InterstitialStep
 
 
 class ChoiceSerializer(serializers.ModelSerializer):
@@ -16,10 +16,17 @@ class FinalStepSerializer(serializers.ModelSerializer):
         fields = ('should_go_to_meeting',)
 
 
+class InterstitialStepSerializer(serializers.ModelSerializer):
+    class Meta:
+      model = InterstitialStep
+      fields = ('next_step', )
+
+
 class StepSerializer(serializers.ModelSerializer):
     choices = ChoiceSerializer(many=True)
     final_step = FinalStepSerializer()
+    interstitial_step = InterstitialStepSerializer()
 
     class Meta:
         model = Step
-        fields = ('text', 'choices', 'final_step', 'is_first_step', 'is_interstitial')
+        fields = ('text', 'choices', 'final_step', 'is_first_step', 'interstitial_step')

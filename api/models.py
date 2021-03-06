@@ -12,7 +12,6 @@ class Step(models.Model):
         ]
 
     text = models.TextField(unique=True)
-    is_interstitial = models.BooleanField(default=False)
     is_first_step = models.BooleanField(default=False)
 
     def __str__(self):
@@ -53,6 +52,16 @@ class Choice(models.Model):
 
     def __str__(self):
         return '%s - %s -> %s' % (self.step.text, self.get_answer_display(), self.next_step.text)
+
+
+class InterstitialStep(models.Model):
+  step = models.OneToOneField(
+      Step, primary_key=True, related_name="interstitial_step", on_delete=models.CASCADE)
+  next_step = models.OneToOneField(
+      Step, null=True, blank=True, on_delete=models.SET_NULL)
+
+  def __str__(self):
+    return self.step.text
 
 
 class FinalStep(models.Model):
